@@ -1,0 +1,29 @@
+#pragma once
+
+#include <stdint.h>
+
+namespace blackblox
+{
+
+struct BBColor
+{
+    uint8_t g;
+    uint8_t b;
+    uint8_t r;
+
+    constexpr BBColor(uint8_t green, uint8_t blue, uint8_t red)
+        : g(green), b(blue), r(red)
+    {
+    }
+
+    static constexpr BBColor Off()     { return BBColor(0x00, 0x00, 0x00); }
+    static constexpr BBColor Red()     { return BBColor(0x00, 0x00, 0xFF); }
+    static constexpr BBColor Green()   { return BBColor(0xFF, 0x00, 0x00); }
+    static constexpr BBColor Blue()    { return BBColor(0x00, 0xFF, 0x00); }
+    static constexpr BBColor White()   { return BBColor(0xFF, 0xFF, 0xFF); }
+    static constexpr BBColor Yellow()  { return BBColor(0xFF, 0xFF, 0x00); }
+    static constexpr BBColor Cyan()    { return BBColor(0xFF, 0x00, 0xFF); }
+    static constexpr BBColor Magenta() { return BBColor(0x00, 0xFF, 0xFF); }
+};
+
+}
