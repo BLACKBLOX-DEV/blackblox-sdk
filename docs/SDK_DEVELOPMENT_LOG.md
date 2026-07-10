@@ -1,10 +1,6 @@
-# 2026-07-06
+2026-07-09
+- M01 completed
+- First successful build on ESP32-S3
 
-## Milestones
-
-- GitHub repository created
-- VS Code configured
-- Git configured
-- First successful commit
-- Added transport layer
-- Created BBI2C interface
+2026-07-10
+- Started M02 (I2C)
