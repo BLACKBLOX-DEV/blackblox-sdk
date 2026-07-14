@@ -14,8 +14,8 @@ The display is updated only after calling:
 ```cpp
 matrix.show();
 
-| Function           | Implemented |
-| ------------------ | :----:      |
+| Function           | Status |
+| ------------------ | :----: |
 | `begin()`          |    ✅   |
 | `clear()`          |    ✅   |
 | `fill()`           |    ✅   |

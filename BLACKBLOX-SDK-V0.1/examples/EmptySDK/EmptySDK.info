@@ -1,0 +1,10 @@
+#include <BLACKBLOX.h>
+
+void setup()
+{
+    BB.begin();
+}
+
+void loop()
+{
+}

@@ -71,6 +71,31 @@ void BBRGBMatrix8x16::setPixel(
     _buffer[index + 2] = color.r;
 }
 
+void BBRGBMatrix8x16::drawMonoBitmap(
+    uint8_t x0,
+    uint8_t y0,
+    const uint8_t* bitmap,
+    uint8_t width,
+    uint8_t height,
+    BBColor color)
+{
+    const uint8_t bytesPerRow = (width + 7) / 8;
+
+    for (uint8_t y = 0; y < height; y++)
+    {
+        for (uint8_t x = 0; x < width; x++)
+        {
+            const uint8_t value =
+                bitmap[y * bytesPerRow + (x / 8)];
+
+            if (value & (0x80 >> (x & 7)))
+            {
+                setPixel(x0 + x, y0 + y, color);
+            }
+        }
+    }
+}
+
 bool BBRGBMatrix8x16::show()
 {
     return writeCommand(

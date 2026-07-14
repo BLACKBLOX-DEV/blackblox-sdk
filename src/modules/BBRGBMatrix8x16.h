@@ -16,13 +16,21 @@ public:
 
     explicit BBRGBMatrix8x16(uint8_t address);
 
-    bool begin();
+bool begin();
 
-    void clear();
-    void fill(BBColor color);
-    void setPixel(uint8_t x, uint8_t y, BBColor color);
+void clear();
+void fill(BBColor color);
+void setPixel(uint8_t x, uint8_t y, BBColor color);
 
-    bool show();
+void drawMonoBitmap(
+    uint8_t x,
+    uint8_t y,
+    const uint8_t* bitmap,
+    uint8_t width,
+    uint8_t height,
+    BBColor color);
+
+bool show();
 
 private:
     uint8_t _address;
