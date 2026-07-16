@@ -1,46 +1,45 @@
 #pragma once
 
 #include <stdint.h>
-#include "../core/BBColor.h"
+
+#include "../graphics/BBGraphics.h"
 
 namespace blackblox
 {
 
-class BBRGBMatrix8x16
+class BBRGBMatrix8x16 : public BBGraphics
 {
 public:
     static constexpr uint8_t Width = 16;
     static constexpr uint8_t Height = 8;
-    static constexpr uint16_t PixelCount = Width * Height;
-    static constexpr uint16_t BufferSize = PixelCount * 3;
+
+    static constexpr uint16_t PixelCount =
+        static_cast<uint16_t>(Width) * Height;
+
+    static constexpr uint16_t FrameByteCount =
+        PixelCount * 3;
 
     explicit BBRGBMatrix8x16(uint8_t address);
 
-bool begin();
+    bool begin();
 
-void clear();
-void fill(BBColor color);
-void setPixel(uint8_t x, uint8_t y, BBColor color);
+    void drawMonoBitmap(
+        uint8_t x,
+        uint8_t y,
+        const uint8_t* bitmap,
+        uint8_t width,
+        uint8_t height,
+        BBColor color);
 
-void drawMonoBitmap(
-    uint8_t x,
-    uint8_t y,
-    const uint8_t* bitmap,
-    uint8_t width,
-    uint8_t height,
-    BBColor color);
-
-bool show();
+    bool show() override;
 
 private:
     uint8_t _address;
-    uint8_t _buffer[BufferSize];
 
     bool writeCommand(
         uint8_t command,
         const uint8_t* payload,
-        uint16_t length
-    );
+        uint16_t length);
 };
 
 }

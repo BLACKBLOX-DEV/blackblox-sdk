@@ -3,15 +3,17 @@
 
 namespace blackblox
 {
-    BBClass BB;
 
-    bool BBClass::begin()
-    {
-        return true;
-    }
+bool BBClass::begin()
+{
+    return BBI2C::begin(0, 1);
+}
 
-    bool BBClass::begin(int sda, int scl)
-    {
-        return BBI2C::begin(sda, scl);
-    }
+bool BBClass::begin(int sda, int scl)
+{
+    return BBI2C::begin(sda, scl);
+}
+
+BBClass BB;
+
 }
