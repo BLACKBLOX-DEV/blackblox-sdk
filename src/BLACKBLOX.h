@@ -3,10 +3,10 @@
 #include "core/BB.h"
 
 #include "graphics/BBGraphics.h"
+#include "display/BBMatrixDisplay.h"
 
 #include "graphics/fonts/BBFont.h"
 #include "graphics/fonts/BBFont5x7.h"
-
 #include "graphics/fonts/BBFont8x16.h"
 
 #include "modules/BBRGBMatrix8x16.h"
@@ -22,3 +22,5 @@ using blackblox::BBFont5x7;
 using blackblox::BBFont8x16;
 
 using blackblox::BBRGBMatrix8x16;
+using blackblox::BBMatrixDisplay;
+using blackblox::BBMatrixRotation;
