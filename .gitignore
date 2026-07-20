@@ -53,3 +53,16 @@ dkms.conf
 
 # debug information files
 *.dwo
+# Visual Studio
+.vs/
+
+# Build output
+bin/
+obj/
+
+# User files
+*.user
+*.suo
+
+# VS Code
+.vscode/settings.json
