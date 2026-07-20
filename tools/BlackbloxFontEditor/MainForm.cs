@@ -12,6 +12,13 @@ public partial class MainForm : Form
     private readonly Button _generateButton;
     private readonly TextBox _outputBox;
     private readonly FontResource _font;
+    private readonly Button _nextButton;
+    private readonly Button _previousButton;
+
+
+
+
+
 
     public MainForm()
     {
@@ -53,6 +60,7 @@ public partial class MainForm : Form
         _grid.SetGlyph(_font.GetGlyph('A'));
 
         _characterBox.TextChanged += CharacterBox_TextChanged;
+        _characterBox.KeyDown += CharacterBox_KeyDown;
 
         _clearButton = new Button
         {
@@ -84,8 +92,29 @@ public partial class MainForm : Form
             WordWrap = false
         };
 
+        _nextButton = new Button
+        {
+            Left = 320,
+            Top = 570,
+            Width = 50,
+            Height = 35,
+            Text = ">"
+        };
+
+        _previousButton = new Button
+        {
+            Left = 260,
+            Top = 570,
+            Width = 50,
+            Height = 35,
+            Text = "<"
+        };
+
         _clearButton.Click += ClearButton_Click;
         _generateButton.Click += GenerateButton_Click;
+        _nextButton.Click += NextButton_Click;
+        _previousButton.Click += PreviousButton_Click;
+
 
         Controls.Add(characterLabel);
         Controls.Add(_characterBox);
@@ -93,37 +122,35 @@ public partial class MainForm : Form
         Controls.Add(_clearButton);
         Controls.Add(_generateButton);
         Controls.Add(_outputBox);
+        Controls.Add(_nextButton);
+        Controls.Add(_previousButton);
     }
 
     private void ClearButton_Click(object? sender, EventArgs e)
     {
-        _font.GetGlyph(_characterBox.Text[0]).Clear();
+        _font.GetGlyph(CurrentCharacter).Clear();
 
         _grid.Invalidate();
 
         _outputBox.Clear();
     }
 
-    private void GenerateButton_Click(object? sender, EventArgs e)
+private void GenerateButton_Click(object? sender, EventArgs e)
 {
-    string character = _characterBox.Text.Trim();
-
-    if (string.IsNullOrEmpty(character))
-    {
-        MessageBox.Show(
-            "Vpiši znak.",
-            "BLACKBLOX Font Editor",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Warning);
-
+    if (_characterBox.TextLength != 1)
         return;
-    }
 
-    string name = $"font5x7_{character[0]}";
+    string name = $"font5x7_{CurrentCharacter}";
+
+    if (_grid.Glyph is null)
+        return;
 
     _outputBox.Text = CppGenerator.Generate(
         _grid.Glyph,
         name);
+
+    _outputBox.SelectAll();
+    _outputBox.Focus();
 }
 private void CharacterBox_TextChanged(object? sender, EventArgs e)
 {
@@ -131,5 +158,46 @@ private void CharacterBox_TextChanged(object? sender, EventArgs e)
         return;
 
     _grid.SetGlyph(_font.GetGlyph(_characterBox.Text[0]));
+    _outputBox.Clear();
 }
+
+private void SelectCharacter(char c)
+{
+    if (_characterBox.Text == c.ToString())
+        return;
+
+    _characterBox.Text = c.ToString();
+}
+private void NextButton_Click(object? sender, EventArgs e)
+{
+    if (_characterBox.Text.Length != 1)
+        return;
+
+    char c = CurrentCharacter;
+
+    c = (c >= '~') ? ' ' : (char)(c + 1);
+        SelectCharacter(c);
+
+        _characterBox.Focus();
+}
+
+private void PreviousButton_Click(object? sender, EventArgs e)
+{
+    if (_characterBox.Text.Length != 1)
+        return;
+
+    char c = CurrentCharacter;
+
+    if (c > ' ')
+        SelectCharacter(c);
+        _characterBox.Focus();
+}
+private void CharacterBox_KeyDown(object? sender, KeyEventArgs e)
+{
+    if (e.KeyCode == Keys.Enter)
+        GenerateButton_Click(null, EventArgs.Empty);
+        _outputBox.SelectAll();
+        _outputBox.Focus();
+}
+private char CurrentCharacter => _characterBox.Text[0];
 }
