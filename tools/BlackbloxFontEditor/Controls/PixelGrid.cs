@@ -1,30 +1,42 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using BlackbloxFontEditor.Models;
 
 namespace BlackbloxFontEditor.Controls;
 
 public class PixelGrid : Control
 {
-    private readonly bool[,] _pixels;
+    public Glyph? Glyph { get; private set; }
 
-    public int Columns { get; } = 5;
+    public int Columns => Glyph?.Width ?? 0;
 
-    public int Rows { get; } = 7;
+    public int Rows => Glyph?.Height ?? 0;
 
     public PixelGrid()
     {
-        _pixels = new bool[Columns, Rows];
-
         DoubleBuffered = true;
+    }
+
+    public void SetGlyph(Glyph glyph)
+    {
+        Glyph = glyph ?? throw new ArgumentNullException(nameof(glyph));
+
+        Invalidate();
     }
 
     protected override void OnPaint(PaintEventArgs e)
     {
         base.OnPaint(e);
 
+        if (Glyph is null || Columns == 0 || Rows == 0)
+            return;
+
         int cellWidth = Width / Columns;
         int cellHeight = Height / Rows;
+
+        if (cellWidth <= 0 || cellHeight <= 0)
+            return;
 
         for (int y = 0; y < Rows; y++)
         {
@@ -37,7 +49,7 @@ public class PixelGrid : Control
                     cellHeight - 1);
 
                 e.Graphics.FillRectangle(
-                    _pixels[x, y]
+                    Glyph.Pixels[x, y]
                         ? Brushes.Black
                         : Brushes.White,
                     r);
@@ -53,8 +65,14 @@ public class PixelGrid : Control
     {
         base.OnMouseDown(e);
 
+        if (Glyph is null || Columns == 0 || Rows == 0)
+            return;
+
         int cellWidth = Width / Columns;
         int cellHeight = Height / Rows;
+
+        if (cellWidth <= 0 || cellHeight <= 0)
+            return;
 
         int x = e.X / cellWidth;
         int y = e.Y / cellHeight;
@@ -65,26 +83,32 @@ public class PixelGrid : Control
         if (y < 0 || y >= Rows)
             return;
 
-        _pixels[x, y] = !_pixels[x, y];
+        Glyph.Pixels[x, y] = !Glyph.Pixels[x, y];
 
         Invalidate();
     }
 
     public void Clear()
     {
-        Array.Clear(_pixels);
+        Glyph?.Clear();
 
         Invalidate();
     }
 
     public bool GetPixel(int x, int y)
     {
-        return _pixels[x, y];
+        if (Glyph is null)
+            return false;
+
+        return Glyph.Pixels[x, y];
     }
 
     public void SetPixel(int x, int y, bool value)
     {
-        _pixels[x, y] = value;
+        if (Glyph is null)
+            return;
+
+        Glyph.Pixels[x, y] = value;
 
         Invalidate();
     }

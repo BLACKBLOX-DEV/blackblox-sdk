@@ -1,4 +1,6 @@
 using BlackbloxFontEditor.Controls;
+using BlackbloxFontEditor.Generators;
+using BlackbloxFontEditor.Models;
 
 namespace BlackbloxFontEditor;
 
@@ -9,10 +11,13 @@ public partial class MainForm : Form
     private readonly Button _clearButton;
     private readonly Button _generateButton;
     private readonly TextBox _outputBox;
+    private readonly FontResource _font;
 
     public MainForm()
     {
         InitializeComponent();
+
+   
 
         Text = "BLACKBLOX Font Editor";
         ClientSize = new Size(900, 650);
@@ -35,6 +40,8 @@ public partial class MainForm : Form
             Text = "Character:"
         };
 
+        _font = new FontResource();
+
         _grid = new PixelGrid
         {
             Left = 20,
@@ -42,6 +49,10 @@ public partial class MainForm : Form
             Width = 350,
             Height = 490
         };
+
+        _grid.SetGlyph(_font.GetGlyph('A'));
+
+        _characterBox.TextChanged += CharacterBox_TextChanged;
 
         _clearButton = new Button
         {
@@ -86,12 +97,39 @@ public partial class MainForm : Form
 
     private void ClearButton_Click(object? sender, EventArgs e)
     {
-        _grid.Clear();
+        _font.GetGlyph(_characterBox.Text[0]).Clear();
+
+        _grid.Invalidate();
+
         _outputBox.Clear();
     }
 
     private void GenerateButton_Click(object? sender, EventArgs e)
+{
+    string character = _characterBox.Text.Trim();
+
+    if (string.IsNullOrEmpty(character))
     {
-        _outputBox.Text = "Generator še ni dodan.";
+        MessageBox.Show(
+            "Vpiši znak.",
+            "BLACKBLOX Font Editor",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
+
+        return;
     }
+
+    string name = $"font5x7_{character[0]}";
+
+    _outputBox.Text = CppGenerator.Generate(
+        _grid.Glyph,
+        name);
+}
+private void CharacterBox_TextChanged(object? sender, EventArgs e)
+{
+    if (_characterBox.Text.Length != 1)
+        return;
+
+    _grid.SetGlyph(_font.GetGlyph(_characterBox.Text[0]));
+}
 }
