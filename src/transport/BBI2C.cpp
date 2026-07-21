@@ -14,6 +14,8 @@ bool BBI2C::begin(int sda, int scl)
     {
         return false;
     }
+
+    Wire.setClock(400000);
 #else
     (void)sda;
     (void)scl;
@@ -28,6 +30,11 @@ bool BBI2C::write(
     uint16_t length)
 {
 #if defined(ARDUINO)
+    if (data == nullptr || length == 0)
+    {
+        return false;
+    }
+
     Wire.beginTransmission(address);
 
     for (uint16_t i = 0; i < length; i++)
