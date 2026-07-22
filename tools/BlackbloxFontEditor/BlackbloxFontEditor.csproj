@@ -1,27 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-
     <OutputType>WinExe</OutputType>
-
     <TargetFramework>net10.0-windows</TargetFramework>
-
     <UseWindowsForms>true</UseWindowsForms>
-
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>BlackbloxFontEditor</AssemblyName>
+    <RootNamespace>BlackbloxFontEditor</RootNamespace>
 
-    <PublishSingleFile>true</PublishSingleFile>
-
-    <SelfContained>true</SelfContained>
-
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-
-    <PublishTrimmed>false</PublishTrimmed>
-
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>BLACKBLOX Font Editor</Product>
+    <Company>blackblox d.o.o.</Company>
+    <Copyright>Copyright © blackblox d.o.o. 2026</Copyright>
   </PropertyGroup>
 
 </Project>

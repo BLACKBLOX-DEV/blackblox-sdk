@@ -9,10 +9,6 @@ public static class CppGenerator
     {
         StringBuilder sb = new();
 
-        sb.AppendLine($"// Bitmap size : {glyph.Width} x {glyph.Height}");
-        sb.AppendLine($"// Glyph width : {glyph.DisplayWidth}");
-        sb.AppendLine();
-
         sb.AppendLine($"static const uint8_t {name}[] =");
         sb.AppendLine("{");
 

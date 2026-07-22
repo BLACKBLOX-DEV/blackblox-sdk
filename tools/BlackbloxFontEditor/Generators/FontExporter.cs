@@ -13,17 +13,31 @@ public static class FontExporter
         ArgumentNullException.ThrowIfNull(font);
 
         if (font.Width < 1 || font.Width > 8)
+        {
             throw new NotSupportedException(
                 "The current BLACKBLOX BBFont format supports glyph widths from 1 to 8 pixels.");
+        }
 
         if (font.Height < 1 || font.Height > byte.MaxValue)
+        {
             throw new NotSupportedException(
                 "The font height must be between 1 and 255 pixels.");
+        }
 
         if (spacing < 0 || spacing > byte.MaxValue)
-            throw new ArgumentOutOfRangeException(nameof(spacing));
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(spacing));
+        }
+
+        ValidateGlyphWidths(font);
 
         className = SanitizeIdentifier(className);
+
+        List<KeyValuePair<char, Glyph>> orderedGlyphs =
+            font.Glyphs
+                .OrderBy(item => item.Key)
+                .ToList();
 
         StringBuilder sb = new();
 
@@ -39,40 +53,19 @@ public static class FontExporter
         sb.AppendLine("{");
         sb.AppendLine("public:");
         sb.AppendLine();
-        sb.AppendLine("    static const BBFont& font()");
-        sb.AppendLine("    {");
-        sb.AppendLine("        static const BBFont descriptor =");
-        sb.AppendLine("        {");
-        sb.AppendLine($"            {font.Width},");
-        sb.AppendLine($"            {font.Height},");
-        sb.AppendLine($"            {spacing},");
-        sb.AppendLine("            BBFontFormat::Rows,");
-        sb.AppendLine($"            &{className}::getGlyph");
-        sb.AppendLine("        };");
-        sb.AppendLine();
-        sb.AppendLine("        return descriptor;");
-        sb.AppendLine("    }");
-        sb.AppendLine();
-        sb.AppendLine("    static const uint8_t* getGlyph(char character)");
-        sb.AppendLine("    {");
 
-        foreach (KeyValuePair<char, Glyph> item in font.Glyphs.OrderBy(item => item.Key))
-            AppendGlyphArray(sb, item.Key, item.Value);
-
-        sb.AppendLine("        switch (character)");
-        sb.AppendLine("        {");
-
-        foreach (KeyValuePair<char, Glyph> item in font.Glyphs.OrderBy(item => item.Key))
-        {
-            string characterLiteral = GetCharacterLiteral(item.Key);
-            string glyphName = GetGlyphName(item.Key);
-            sb.AppendLine($"            case {characterLiteral}: return {glyphName};");
-        }
+        AppendFontDescriptor(
+            sb,
+            font,
+            className,
+            spacing);
 
         sb.AppendLine();
-        sb.AppendLine("            default: return nullptr;");
-        sb.AppendLine("        }");
-        sb.AppendLine("    }");
+
+        AppendGetGlyphMethod(
+            sb,
+            orderedGlyphs);
+
         sb.AppendLine("};");
         sb.AppendLine();
         sb.AppendLine("}");
@@ -86,21 +79,92 @@ public static class FontExporter
         string filePath,
         int spacing = 1)
     {
-        string source = GenerateHeader(font, className, spacing);
+        string source =
+            GenerateHeader(
+                font,
+                className,
+                spacing);
+
         File.WriteAllText(
             filePath,
             source,
-            new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            new UTF8Encoding(
+                encoderShouldEmitUTF8Identifier: false));
     }
 
-    private static void AppendGlyphArray(
+    private static void AppendFontDescriptor(
+        StringBuilder sb,
+        FontResource font,
+        string className,
+        int spacing)
+    {
+        sb.AppendLine("    static const BBFont& font()");
+        sb.AppendLine("    {");
+        sb.AppendLine("        static const BBFont descriptor =");
+        sb.AppendLine("        {");
+        sb.AppendLine($"            {font.Width},");
+        sb.AppendLine($"            {font.Height},");
+        sb.AppendLine($"            {spacing},");
+        sb.AppendLine("            BBFontFormat::Rows,");
+        sb.AppendLine($"            &{className}::getGlyph");
+        sb.AppendLine("        };");
+        sb.AppendLine();
+        sb.AppendLine("        return descriptor;");
+        sb.AppendLine("    }");
+    }
+
+    private static void AppendGetGlyphMethod(
+        StringBuilder sb,
+        IReadOnlyList<KeyValuePair<char, Glyph>> glyphs)
+    {
+        sb.AppendLine(
+            "    static const BBGlyph* getGlyph(char character)");
+
+        sb.AppendLine("    {");
+
+        foreach (KeyValuePair<char, Glyph> item in glyphs)
+        {
+            AppendGlyph(
+                sb,
+                item.Key,
+                item.Value);
+        }
+
+        sb.AppendLine("        switch (character)");
+        sb.AppendLine("        {");
+
+        foreach (KeyValuePair<char, Glyph> item in glyphs)
+        {
+            string characterLiteral =
+                GetCharacterLiteral(item.Key);
+
+            string glyphObjectName =
+                GetGlyphObjectName(item.Key);
+
+            sb.AppendLine(
+                $"            case {characterLiteral}: return &{glyphObjectName};");
+        }
+
+        sb.AppendLine();
+        sb.AppendLine("            default: return nullptr;");
+        sb.AppendLine("        }");
+        sb.AppendLine("    }");
+    }
+
+    private static void AppendGlyph(
         StringBuilder sb,
         char character,
         Glyph glyph)
     {
-        string glyphName = GetGlyphName(character);
+        string bitmapName =
+            GetGlyphBitmapName(character);
 
-        sb.AppendLine($"        static const uint8_t {glyphName}[{glyph.Height}] =");
+        string glyphObjectName =
+            GetGlyphObjectName(character);
+
+        sb.AppendLine(
+            $"        static const uint8_t {bitmapName}[{glyph.Height}] =");
+
         sb.AppendLine("        {");
 
         for (int y = 0; y < glyph.Height; y++)
@@ -109,7 +173,10 @@ public static class FontExporter
 
             for (int bit = 0; bit < 8; bit++)
             {
-                bool pixelOn = bit < glyph.Width && glyph.Pixels[bit, y];
+                bool pixelOn =
+                    bit < glyph.Width &&
+                    glyph.Pixels[bit, y];
+
                 sb.Append(pixelOn ? '1' : '0');
             }
 
@@ -121,11 +188,54 @@ public static class FontExporter
 
         sb.AppendLine("        };");
         sb.AppendLine();
+
+        int displayWidth =
+            Math.Clamp(
+                glyph.DisplayWidth,
+                1,
+                glyph.Width);
+
+        sb.AppendLine(
+            $"        static const BBGlyph {glyphObjectName} =");
+
+        sb.AppendLine("        {");
+        sb.AppendLine($"            {displayWidth},");
+        sb.AppendLine($"            {bitmapName}");
+        sb.AppendLine("        };");
+        sb.AppendLine();
     }
 
-    private static string GetGlyphName(char character) => $"glyph_{(int)character}";
+    private static void ValidateGlyphWidths(
+        FontResource font)
+    {
+        foreach (KeyValuePair<char, Glyph> item in font.Glyphs)
+        {
+            Glyph glyph = item.Value;
 
-    private static string GetCharacterLiteral(char character)
+            if (glyph.DisplayWidth < 1 ||
+                glyph.DisplayWidth > glyph.Width)
+            {
+                throw new InvalidOperationException(
+                    $"Character {(int)item.Key} has an invalid display width of " +
+                    $"{glyph.DisplayWidth}. The valid range is 1 to {glyph.Width}.");
+            }
+        }
+    }
+
+    private static string GetGlyphBitmapName(
+        char character)
+    {
+        return $"glyphBitmap_{(int)character}";
+    }
+
+    private static string GetGlyphObjectName(
+        char character)
+    {
+        return $"glyph_{(int)character}";
+    }
+
+    private static string GetCharacterLiteral(
+        char character)
     {
         return character switch
         {
@@ -135,12 +245,16 @@ public static class FontExporter
             '\n' => @"'\n'",
             '\r' => @"'\r'",
             '\t' => @"'\t'",
-            _ when char.IsControl(character) => $"static_cast<char>({(int)character})",
+
+            _ when char.IsControl(character) =>
+                $"static_cast<char>({(int)character})",
+
             _ => $"'{character}'"
         };
     }
 
-    private static string SanitizeIdentifier(string value)
+    private static string SanitizeIdentifier(
+        string value)
     {
         if (string.IsNullOrWhiteSpace(value))
             return "BBFont";
@@ -149,8 +263,11 @@ public static class FontExporter
 
         foreach (char character in value)
         {
-            if (char.IsLetterOrDigit(character) || character == '_')
+            if (char.IsLetterOrDigit(character) ||
+                character == '_')
+            {
                 sb.Append(character);
+            }
         }
 
         if (sb.Length == 0)

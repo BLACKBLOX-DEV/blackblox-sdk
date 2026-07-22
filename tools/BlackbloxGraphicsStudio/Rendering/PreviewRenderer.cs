@@ -23,8 +23,7 @@ public static class PreviewRenderer
             1,
             Math.Min(
                 10,
-                (clientRectangle.Height - (margin * 2)) /
-                Math.Max(1, font.Height)));
+                (clientRectangle.Height - (margin * 2)) / Math.Max(1, font.Height)));
 
         int x = margin;
         int y = margin;
@@ -45,35 +44,18 @@ public static class PreviewRenderer
 
             Glyph glyph = font.GetGlyph(character);
 
-            int displayWidth = glyph.DisplayWidth;
-
-            if (character == ' ' && displayWidth <= 0)
-                displayWidth = Math.Max(1, font.Width / 2);
-
-            int advanceWidth =
-                (displayWidth + spacing) * pixelScale;
-
-            if (x + advanceWidth >
-                clientRectangle.Width - margin)
+            if (x + ((glyph.Width + spacing) * pixelScale) > clientRectangle.Width - margin)
             {
                 x = margin;
                 y += (font.Height + spacing) * pixelScale;
             }
 
-            if (y + (font.Height * pixelScale) >
-                clientRectangle.Height - margin)
-            {
+            if (y + (font.Height * pixelScale) > clientRectangle.Height - margin)
                 break;
-            }
-
-            int columnsToDraw =
-                Math.Min(displayWidth, glyph.Width);
 
             for (int row = 0; row < glyph.Height; row++)
             {
-                for (int column = 0;
-                     column < columnsToDraw;
-                     column++)
+                for (int column = 0; column < glyph.Width; column++)
                 {
                     if (!glyph.Pixels[column, row])
                         continue;
@@ -87,7 +69,7 @@ public static class PreviewRenderer
                 }
             }
 
-            x += advanceWidth;
+            x += (glyph.Width + spacing) * pixelScale;
         }
     }
 }

@@ -231,22 +231,29 @@ void BBGraphics::drawChar(
         return;
     }
 
-    const uint8_t* glyph =
+    const BBGlyph* glyph =
         font.getGlyph(character);
 
-    if (glyph == nullptr)
+    if (glyph == nullptr ||
+        glyph->bitmap == nullptr)
     {
         return;
     }
 
+    const uint8_t* bitmap =
+        glyph->bitmap;
+
+    const uint8_t glyphWidth =
+        glyph->width;
+
     if (font.format == BBFontFormat::Columns)
     {
         for (uint8_t column = 0;
-             column < font.width;
+             column < glyphWidth;
              ++column)
         {
             const uint8_t columnData =
-                glyph[column];
+                bitmap[column];
 
             for (uint8_t row = 0;
                  row < font.height;
@@ -269,10 +276,10 @@ void BBGraphics::drawChar(
              ++row)
         {
             const uint8_t rowData =
-                glyph[row];
+                bitmap[row];
 
             for (uint8_t column = 0;
-                 column < font.width;
+                 column < glyphWidth;
                  ++column)
             {
                 if ((rowData &
@@ -321,6 +328,14 @@ void BBGraphics::drawText(
             continue;
         }
 
+        const BBGlyph* glyph = nullptr;
+
+        if (font.getGlyph != nullptr)
+        {
+            glyph =
+                font.getGlyph(*text);
+        }
+
         drawChar(
             cursorX,
             cursorY,
@@ -328,8 +343,16 @@ void BBGraphics::drawText(
             font,
             color);
 
-        cursorX +=
-            font.width + font.spacing;
+        if (glyph != nullptr)
+        {
+            cursorX +=
+                glyph->width + font.spacing;
+        }
+        else
+        {
+            cursorX +=
+                font.width + font.spacing;
+        }
 
         ++text;
     }
@@ -362,9 +385,6 @@ void BBGraphics::drawText(
         BBFont5x7::font(),
         color);
 }
-
-
-
 
 const BBColor* BBGraphics::framebuffer() const
 {
