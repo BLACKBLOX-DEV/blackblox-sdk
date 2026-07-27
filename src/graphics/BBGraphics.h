@@ -11,7 +11,10 @@ namespace blackblox
 class BBGraphics
 {
 public:
-    BBGraphics(uint16_t width, uint16_t height);
+    BBGraphics(
+        uint16_t width,
+        uint16_t height);
+
     virtual ~BBGraphics();
 
     BBGraphics(const BBGraphics&) = delete;
@@ -55,7 +58,10 @@ public:
         int16_t height,
         BBColor color);
 
-    // Privzeti font 5 x 7.
+    // ========================================================
+    // Privzeti font 5 x 7
+    // ========================================================
+
     void drawChar(
         int16_t x,
         int16_t y,
@@ -68,7 +74,10 @@ public:
         const char* text,
         BBColor color);
 
-    // Poljubni font.
+    // ========================================================
+    // Poljubni font
+    // ========================================================
+
     void drawChar(
         int16_t x,
         int16_t y,
@@ -82,6 +91,18 @@ public:
         const char* text,
         const BBFont& font,
         BBColor color);
+
+    // ========================================================
+    // Merjenje besedila
+    // ========================================================
+
+    uint8_t getCharacterWidth(
+        char character,
+        const BBFont& font) const;
+
+    int16_t getTextWidth(
+        const char* text,
+        const BBFont& font) const;
 
     virtual bool show() = 0;
 

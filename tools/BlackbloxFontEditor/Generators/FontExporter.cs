@@ -181,7 +181,9 @@ public static class FontExporter
             }
 
             if (y < glyph.Height - 1)
+            {
                 sb.Append(',');
+            }
 
             sb.AppendLine();
         }
@@ -190,10 +192,7 @@ public static class FontExporter
         sb.AppendLine();
 
         int displayWidth =
-            Math.Clamp(
-                glyph.DisplayWidth,
-                1,
-                glyph.Width);
+            CalculateDisplayWidth(glyph);
 
         sb.AppendLine(
             $"        static const BBGlyph {glyphObjectName} =");
@@ -203,6 +202,48 @@ public static class FontExporter
         sb.AppendLine($"            {bitmapName}");
         sb.AppendLine("        };");
         sb.AppendLine();
+    }
+
+    private static int CalculateDisplayWidth(
+        Glyph glyph)
+    {
+        int configuredWidth =
+            Math.Clamp(
+                glyph.DisplayWidth,
+                1,
+                glyph.Width);
+
+        int rightmostPixel = -1;
+
+        for (int x = 0; x < glyph.Width; x++)
+        {
+            for (int y = 0; y < glyph.Height; y++)
+            {
+                if (glyph.Pixels[x, y])
+                {
+                    rightmostPixel =
+                        Math.Max(
+                            rightmostPixel,
+                            x);
+                }
+            }
+        }
+
+        // Prazni glifi, predvsem presledek, nimajo naravne
+        // širine. Pri njih ohranimo širino, nastavljeno v editorju.
+        if (rightmostPixel < 0)
+        {
+            return configuredWidth;
+        }
+
+        int bitmapWidth =
+            rightmostPixel + 1;
+
+        // Samodejno odstranimo prazne stolpce na desni,
+        // vendar še vedno dovolimo ročno nastavljeno ožjo širino.
+        return Math.Min(
+            configuredWidth,
+            bitmapWidth);
     }
 
     private static void ValidateGlyphWidths(
@@ -257,7 +298,9 @@ public static class FontExporter
         string value)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             return "BBFont";
+        }
 
         StringBuilder sb = new();
 
@@ -271,10 +314,14 @@ public static class FontExporter
         }
 
         if (sb.Length == 0)
+        {
             return "BBFont";
+        }
 
         if (char.IsDigit(sb[0]))
+        {
             sb.Insert(0, '_');
+        }
 
         return sb.ToString();
     }

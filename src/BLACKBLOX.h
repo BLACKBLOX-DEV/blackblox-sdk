@@ -8,6 +8,7 @@
 #include "graphics/fonts/BBFont.h"
 #include "graphics/fonts/BBFont5x7.h"
 #include "graphics/fonts/BBFont8x16.h"
+#include "graphics/BBScroller.h"
 
 #include "modules/BBRGBMatrix8x16.h"
 

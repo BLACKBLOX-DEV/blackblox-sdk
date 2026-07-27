@@ -402,5 +402,54 @@ uint32_t BBGraphics::pixelIndex(
 {
     return static_cast<uint32_t>(y) * _width + x;
 }
+uint8_t BBGraphics::getCharacterWidth(
+    char character,
+    const BBFont& font) const
+{
+    if (font.getGlyph == nullptr)
+    {
+        return font.width;
+    }
 
+    const BBGlyph* glyph =
+        font.getGlyph(character);
+
+    if (glyph == nullptr)
+    {
+        return font.width;
+    }
+
+    return glyph->width;
+}
+
+int16_t BBGraphics::getTextWidth(
+    const char* text,
+    const BBFont& font) const
+{
+    if (text == nullptr)
+    {
+        return 0;
+    }
+
+    int16_t width = 0;
+    bool firstCharacter = true;
+
+    while (*text != '\0')
+    {
+        if (!firstCharacter)
+        {
+            width += font.spacing;
+        }
+
+        width +=
+            getCharacterWidth(
+                *text,
+                font);
+
+        firstCharacter = false;
+        ++text;
+    }
+
+    return width;
+}
 }
