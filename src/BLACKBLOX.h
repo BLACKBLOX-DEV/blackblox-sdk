@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/BB.h"
-
+#include "platform/arduino/BBProcessorESP32.h"
 #include "graphics/BBGraphics.h"
 #include "display/BBMatrixDisplay.h"
 
@@ -9,6 +9,10 @@
 #include "graphics/fonts/BBFont5x7.h"
 #include "graphics/fonts/BBFont8x16.h"
 #include "graphics/BBScroller.h"
+#include "drivers/BBLP5569.h"
+#include "modules/BBClimateWSENHIDS.h"
+#include "sensors/climate/BBWSENHIDS.h"
+
 
 #include "modules/BBRGBMatrix8x16.h"
 
@@ -17,6 +21,14 @@
 
 using blackblox::BB;
 using blackblox::BBClass;
+
+using blackblox::BBProcessorESP32;
+
+using blackblox::BBColor;
+
+using blackblox::BBClimateWSENHIDS;
+using blackblox::BBClimateData;
+using blackblox::BBClimateStatus;
 
 using blackblox::BBFont;
 using blackblox::BBFont5x7;
