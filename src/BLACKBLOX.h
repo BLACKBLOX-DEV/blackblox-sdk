@@ -12,6 +12,7 @@
 #include "drivers/BBLP5569.h"
 #include "modules/BBClimateWSENHIDS.h"
 #include "sensors/climate/BBWSENHIDS.h"
+#include "sensors/climate/pressure/BBWSENPADS.h"
 
 
 #include "modules/BBRGBMatrix8x16.h"
@@ -29,6 +30,7 @@ using blackblox::BBColor;
 using blackblox::BBClimateWSENHIDS;
 using blackblox::BBClimateData;
 using blackblox::BBClimateStatus;
+using blackblox::BBWSENPADS;
 
 using blackblox::BBFont;
 using blackblox::BBFont5x7;
