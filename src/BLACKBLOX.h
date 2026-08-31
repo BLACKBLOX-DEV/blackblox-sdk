@@ -47,6 +47,10 @@ using blackblox::BBMatrixDisplay;
 using blackblox::BBMatrixRotation;
 using blackblox::BBRGBMatrix8x16;
 
+using blackblox::BBSSD1333;
+using blackblox::BBSSD1333Status;
+using blackblox::BBOLED176x176;
+
 using blackblox::BBLP5569;
 using blackblox::BBPCA9633;
 
@@ -56,3 +60,5 @@ using blackblox::BBClimateStatus;
 
 using blackblox::BBWSENHIDS;
 using blackblox::BBWSENPADS;
+
+
