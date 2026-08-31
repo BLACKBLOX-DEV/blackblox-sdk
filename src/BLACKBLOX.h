@@ -18,12 +18,13 @@
 
 #include "modules/BBClimateWSENHIDS.h"
 
+#include "modules/BBRGBMatrix8x16.h"
+#include "modules/BBOLED176x176.h" 
+
 #include "sensors/climate/BBWSENHIDS.h"
 #include "sensors/climate/pressure/BBWSENPADS.h"
 
 
-
-#include "modules/BBRGBMatrix8x16.h"
 
 // Matrix pride v M02
 // #include "matrix/BBRGBMatrix8x16.h"
