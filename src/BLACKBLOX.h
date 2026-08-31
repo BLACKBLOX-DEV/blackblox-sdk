@@ -14,6 +14,7 @@
 
 #include "drivers/BBLP5569.h"
 #include "drivers/BBPCA9633.h"
+#include "drivers/BBSSD1333.h" 
 
 #include "modules/BBClimateWSENHIDS.h"
 
