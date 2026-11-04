@@ -1,4 +1,4 @@
-#include "BBAirQualityBlock.h"
+#include "BBAirQuality.h"
 
 namespace blackblox
 {
