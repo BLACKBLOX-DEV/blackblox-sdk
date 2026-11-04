@@ -21,7 +21,7 @@
 
 #include "modules/BBRGBMatrix8x16.h"
 #include "modules/BBOLED176x176.h"
-#include "modules/blocks/BBAirQuality.h"
+#include "modules/BBAirQuality.h"
 
 #include "sensors/climate/BBWSENHIDS.h"
 #include "sensors/climate/pressure/BBWSENPADS.h"
