@@ -16,12 +16,16 @@
 #include "drivers/BBPCA9633.h"
 #include "drivers/BBSSD1333.h"
 #include "drivers/BBENS160.h"
+#include "drivers/BBSL030.h"
+#include "drivers/BBTCA9534.h"
 
 #include "modules/BBClimateWSENHIDS.h"
 
 #include "modules/BBRGBMatrix8x16.h"
 #include "modules/BBOLED176x176.h"
 #include "modules/BBAirQuality.h"
+#include "modules/BBNFC.h"
+#include "modules/BBLight.h"
 
 #include "sensors/climate/BBWSENHIDS.h"
 #include "sensors/climate/pressure/BBWSENPADS.h"
@@ -62,5 +66,11 @@ using blackblox::BBClimateStatus;
 
 using blackblox::BBWSENHIDS;
 using blackblox::BBWSENPADS;
+
+using blackblox::BBAirQualityBlock;
+
+using blackblox::BBNFC;
+
+using blackblox::BBLight;
 
 
