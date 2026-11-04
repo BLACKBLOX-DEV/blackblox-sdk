@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#include "../../drivers/BBENS160.h"
+#include "../drivers/BBENS160.h"
 
 namespace blackblox
 {
