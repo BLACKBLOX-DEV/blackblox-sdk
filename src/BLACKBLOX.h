@@ -14,12 +14,14 @@
 
 #include "drivers/BBLP5569.h"
 #include "drivers/BBPCA9633.h"
-#include "drivers/BBSSD1333.h" 
+#include "drivers/BBSSD1333.h"
+#include "drivers/BBENS160.h"
 
 #include "modules/BBClimateWSENHIDS.h"
 
 #include "modules/BBRGBMatrix8x16.h"
-#include "modules/BBOLED176x176.h" 
+#include "modules/BBOLED176x176.h"
+#include "modules/blocks/BBAirQuality.h"
 
 #include "sensors/climate/BBWSENHIDS.h"
 #include "sensors/climate/pressure/BBWSENPADS.h"
